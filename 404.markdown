@@ -1,0 +1,7 @@
+---
+title: 404
+---
+
+![Broken Sandbox Logo Icon](/images/logo.gif)\
+
+The page you are looking for doesn't exist, you may find something else at <a href="/archive.html">archives</a>. 

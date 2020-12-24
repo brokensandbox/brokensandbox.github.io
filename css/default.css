@@ -52,6 +52,12 @@ div#footer {
 	text-align: right;
 }
 
+div#content img {
+    margin: auto;
+    display: block;
+    width: 50%;
+}
+
 h1 {
 	font-size: 22px;
 }
