@@ -13,13 +13,19 @@ a.sourceLine:empty {
     height: 1.2em
 }
 
-.sourceCode {
-    overflow: visible
-}
 
 code.sourceCode {
     white-space: pre;
     position: relative
+}
+
+.sourceCode:not(pre):not(code) {
+    background-color: #F3F3F3;
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
+    margin: 1.75rem 0rem;
+    padding: 0.5rem;
+    border-radius: 5px;
 }
 
 div.sourceCode {
@@ -152,6 +158,7 @@ code span.er {
 }
 
 code span.ex {
+    color: #40a070;
 }
 
 code span.fl {
