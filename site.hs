@@ -5,8 +5,12 @@ import           Hakyll
 
 
 --------------------------------------------------------------------------------
+siteConfig :: Configuration
+siteConfig = defaultConfiguration{ deployCommand = "bash deploy.sh deploy" }
+
+--------------------------------------------------------------------------------
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith siteConfig $ do
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
