@@ -15,7 +15,6 @@ Make changes to the site, then commit the changes to develop.
 Deploy these changes to github page with `stack exec brokensandbox deploy`
 
 ## TODO
-[ ] Update basic information on the site
-[ ] Modify the css
 [ ] Add foward and back link between posts
 [ ] Add 404 pages
+[ ] Add tag support to the posts
