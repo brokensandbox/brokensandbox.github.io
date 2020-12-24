@@ -4,7 +4,7 @@ html {
     font-family: sans-serif;
     line-height: 140%;
     margin: 0px;
-    padding: 0px
+    padding: 0px;
 }
 
 body {
@@ -17,7 +17,7 @@ body {
 div#header {
 	border-bottom: 2px solid black;
 	margin-bottom: 30px;
-	padding: 12px 0px 12px 0px
+	padding: 12px 0px 12px 0px;
 }
 
 div#logo a {
@@ -30,7 +30,7 @@ div#logo a {
 }
 
 div#header #navigation {
-	text-align: right
+	text-align: right;
 }
 
 div#header #navigation a {
@@ -39,7 +39,8 @@ div#header #navigation a {
 	font-weight: bold;
 	margin-left: 12px;
 	text-decoration: none;
-	text-transform: uppercase
+	text-transform: uppercase;
+	font-family: "Noto Sans", sans-serif;
 }
 
 div#footer {
@@ -48,19 +49,23 @@ div#footer {
 	font-size: 12px;
 	margin-top: 30px;
 	padding: 12px 0px 12px 0px;
-	text-align: right
+	text-align: right;
 }
 
 h1 {
-	font-size: 24px
+	font-size: 22px;
 }
 
 h2 {
-	font-size: 20px
+	font-size: 20px;
+}
+
+h2 {
+	font-size: 18px;
 }
 
 div.info {
 	color: #555;
 	font-size: 14px;
-	font-style: italic
+	font-style: italic;
 }
