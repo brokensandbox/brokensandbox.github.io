@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Haskyll Blog Setup</title>
+        <title>Hakyll Blog Setup</title>
         <link rel="stylesheet" type="text/css" href="../css/default.css" />
         <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
         <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -24,17 +24,27 @@
             </div>
 
             <div id="content">
-                <h1>Haskyll Blog Setup</h1>
+                <h1>Hakyll Blog Setup</h1>
 
                 <div class="info">
     Posted on December 23, 2020
     
 </div>
+<div class="info">
+    
+	Tags: <a title="All pages tagged 'Hakyll'." href="../tags/Hakyll.html">Hakyll</a>
+    
+</div>
 
-<p>The blog setup is based on the official <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html">Haskyll instructions for github pages</a>.</p>
+<p>The blog setup is based on the official <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html">Hakyll instructions for github pages</a>.</p>
 <p>To deploy new changes to the blog, run</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">stack</span> exec brokensandbox deploy</span></code></pre></div>
 <p>where the main function calls <code>deploy.sh</code> to commit &amp; push changes to github automatically.</p>
+<p>When <code>site.hs</code> is modified, rebuild brokensanbox binary in order to apply the change when generating the static content</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="bu">cd</span> brokensandbox.github.io</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ex">stack</span> build</span></code></pre></div>
+<p>Added tag support following <a href="https://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html">Add tags to your Hakyll blog</a>.</p>
+<p>The source code for this blog can be found at <a href="https://github.com/brokensandbox/brokensandbox.github.io/tree/develop">brokensandbox.github.io</a>.</p>
 
             </div>
             <div id="footer">
