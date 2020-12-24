@@ -16,5 +16,5 @@ Deploy these changes to github page with `stack exec brokensandbox deploy`
 
 ## TODO
 [ ] Add foward and back link between posts
-[ ] Add 404 pages
 [ ] Add tag support to the posts
+[ ] Dark mode?!
