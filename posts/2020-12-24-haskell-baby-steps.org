@@ -1,0 +1,24 @@
+---
+title: Haskell Baby Steps - 1
+tags: Haskell, StudyNotes
+---
+
+* Readings
++ [[http://learnyouahaskell.com/starting-out][Learn You a Haskell for Great Good, chapter 2]]
+
+* Key Learnings about Haskell
++ Every expression and function must return something.For example, any if statement has to have an else statement as well.
++ Lists are *homogenous*, it can only store elements of the same type.
++ ~++~ concatenating 2 lists.
++ ~:~ add an element to the beginning of a list.
++ ~!!~ get an element at index n out.
++ Lists can be compared in lexicographical order.
++ Common list functions: ~head~, ~tail~, ~last~, ~init~, ~length~, ~null~, ~reverse~, ~take~, ~drop~, ~maxium~, ~minimum~, ~sum~, ~product~, ~elem~, ~cycle~, ~repeat~, ~replicate~
++ Range: ~[1..n]~, ~['a'..'z']~
++ Haskell is lazy, use ~take n [1, 2..]~ to build a list from an infinite list
++ Tuples are set of values with the set length and types. For example, ("John", "Smith", 35), ("Jane", "Doe", 27) are tuples of the same type.
++ Common tuple functions: ~fst~, ~snd~, ~zip~,
+
+* Gotchas
++ Functions can't begin with upper letters.
++ Don't use floating point numbers in ranges, they can yield funky results.

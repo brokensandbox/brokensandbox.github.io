@@ -19,6 +19,14 @@ code.sourceCode {
     position: relative
 }
 
+code {
+    padding: .2em .4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: #F3F3F3;
+    border-radius: 6px;
+}
+
 .sourceCode:not(pre):not(code) {
     background-color: #F3F3F3;
     -webkit-overflow-scrolling: touch;
