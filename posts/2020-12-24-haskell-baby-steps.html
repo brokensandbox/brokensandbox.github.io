@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Haskell Baby Steps - 1</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Poiret+One&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+        <link href="../images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    </head>
+    <body>
+        <div id="main">
+            <div id="header">
+                <div id="logo">
+                    <a href="../">Broken Sandbox</a>
+                </div>
+                <div id="navigation">
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                </div>
+            </div>
+
+            <div id="content">
+                <h1>Haskell Baby Steps - 1</h1>
+
+                <div class="info">
+    Posted on December 24, 2020
+    
+</div>
+<div class="info">
+    
+	Tags: <a title="All pages tagged 'Haskell'." href="../tags/Haskell.html">Haskell</a>, <a title="All pages tagged 'StudyNotes'." href="../tags/StudyNotes.html">StudyNotes</a>
+    
+</div>
+
+<h1 id="readings">Readings</h1>
+<ul>
+<li><a href="https://www.cis.upenn.edu/~cis194/spring13/lectures/01-intro.html">Haskell Basics CIS 194 Week 1</a></li>
+<li><a href="http://learnyouahaskell.com/starting-out">Learn You a Haskell for Great Good, chapter 2</a></li>
+<li><a href="http://book.realworldhaskell.org/read/getting-started.html">Real World Haskell, chapter 1 Getting Started</a></li>
+<li><a href="http://book.realworldhaskell.org/read/types-and-functions.html">Real World Haskell, chapter 2 Types and Functions</a></li>
+</ul>
+<h1 id="key-learnings-about-haskell">Key Learnings about Haskell</h1>
+<ul>
+<li>Every expression and function must return something.For example, any if statement has to have an else statement as well.</li>
+<li>Lists are <strong>homogenous</strong>, it can only store elements of the same type.</li>
+<li><code>++</code> concatenating 2 lists.</li>
+<li><code>:</code> add an element to the beginning of a list.</li>
+<li><code>!!</code> get an element at index n out.</li>
+<li>Lists can be compared in lexicographical order.</li>
+<li>Common list functions: <code>head</code>, <code>tail</code>, <code>last</code>, <code>init</code>, <code>length</code>, <code>null</code>, <code>reverse</code>, <code>take</code>, <code>drop</code>, <code>maxium</code>, <code>minimum</code>, <code>sum</code>, <code>product</code>, <code>elem</code>, <code>cycle</code>, <code>repeat</code>, <code>replicate</code></li>
+<li>Range: <code>[1..n]</code>, <code>['a'..'z']</code></li>
+<li>Haskell is lazy, use <code>take n [1, 2..]</code> to build a list from an infinite list</li>
+<li>Tuples are set of values with the set length and types. For example, (“John”, “Smith”, 35), (“Jane”, “Doe”, 27) are tuples of the same type.</li>
+<li>Common tuple functions: <code>fst</code>, <code>snd</code>, <code>zip</code>.</li>
+<li>Check <code>+</code> operator’s order of precedence, use <code>:info (+)</code></li>
+<li>Once a variable is bound to an expression, it cannot be changed.</li>
+<li><strong>Lazy evaluation</strong>: only create a “promise” to compute the value of the expresssion when it is needed.</li>
+</ul>
+<h1 id="gotchas">Gotchas</h1>
+<ul>
+<li>Functions can’t begin with upper letters. Type names start with an Upper letter.</li>
+<li>Don’t use floating point numbers in ranges, they can yield funky results.</li>
+<li>Not equal is <code>/=</code>, logical negation is <code>not</code>.</li>
+<li>Haskell compiler is more optimized for <code>Double</code>, <code>Float</code> is much slower.</li>
+</ul>
+<h1 id="assignment">Assignment</h1>
+<h2 id="implement-the-validation-algorithm-for-credit-cards.-it-follows-these-steps">implement the validation algorithm for credit cards. It follows these steps:</h2>
+<ul>
+<li>Double the value of every second digit beginning from the right. That is, the last digit is unchanged; the second-to-last digit is doubled; the third-to-last digit is unchanged; and so on. For example, [1,3,8,6] becomes [2,3,16,6].</li>
+<li>Add the digits of the doubled values and the undoubled digits from the original number. For example, [2,3,16,6] becomes 2+3+1+6+6 = 18.</li>
+<li>Calculate the remainder when the sum is divided by 10. For the above example, the remainder would be 8.</li>
+<li>If the result equals 0, then the number is valid.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ot">toDigitsRev ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> [<span class="dt">Integer</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>toDigitsRev n</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>  <span class="op">|</span> n <span class="op">&lt;=</span> <span class="dv">0</span> <span class="ot">=</span> []</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>  <span class="op">|</span> n <span class="op">&lt;</span> <span class="dv">10</span> <span class="ot">=</span> [n]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>  <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span> n <span class="ot">`mod`</span> <span class="dv">10</span> <span class="op">:</span> toDigitsRev (n <span class="ot">`div`</span> <span class="dv">10</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="ot">toDigits ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> [<span class="dt">Integer</span>]</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>toDigits n <span class="ot">=</span> <span class="fu">reverse</span> (toDigitsRev n)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="ot">doubleEveryOtherBase ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> [<span class="dt">Integer</span>]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>doubleEveryOtherBase [] <span class="ot">=</span> []</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>doubleEveryOtherBase (x<span class="op">:</span>[]) <span class="ot">=</span> [x]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>doubleEveryOtherBase (x<span class="op">:</span>(y<span class="op">:</span>zs)) <span class="ot">=</span> x <span class="op">:</span> (y<span class="op">*</span><span class="dv">2</span>) <span class="op">:</span> doubleEveryOtherBase zs</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a><span class="ot">doubleEveryOther ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> [<span class="dt">Integer</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>doubleEveryOther n <span class="ot">=</span> <span class="fu">reverse</span> (doubleEveryOtherBase (<span class="fu">reverse</span> n))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="ot">sumDigits ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> <span class="dt">Integer</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>sumDigits [] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>sumDigits (x<span class="op">:</span>[]) <span class="ot">=</span> <span class="fu">sum</span> (toDigits x)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>sumDigits (x<span class="op">:</span>ys) <span class="ot">=</span> <span class="fu">sum</span> (toDigits x) <span class="op">+</span> sumDigits ys</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a><span class="ot">validate ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>validate n <span class="ot">=</span> sumDigits(doubleEveryOther (toDigits n)) <span class="ot">`mod`</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
+<h2 id="solve-the-tower-of-hanoi-puzzle.-given-the-number-of-discs-and-names-for-the-three-pegs-hanoi-should-return-a-list-of-moves-to-be-performed-to-move-the-stack-of-discs-from-the-first-peg-to-the-second.">Solve The Tower of Hanoi puzzle. Given the number of discs and names for the three pegs, hanoi should return a list of moves to be performed to move the stack of discs from the first peg to the second.</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">type</span> <span class="dt">Peg</span> <span class="ot">=</span> <span class="dt">String</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">type</span> <span class="dt">Move</span> <span class="ot">=</span> (<span class="dt">Peg</span>, <span class="dt">Peg</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="ot">hanoi ::</span> <span class="dt">Integer</span> <span class="ot">-&gt;</span> <span class="dt">Peg</span> <span class="ot">-&gt;</span> <span class="dt">Peg</span> <span class="ot">-&gt;</span> <span class="dt">Peg</span> <span class="ot">-&gt;</span> [<span class="dt">Move</span>]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>hanoi <span class="dv">1</span> a b c <span class="ot">=</span> [(a, b)]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>hanoi n a b c <span class="ot">=</span> hanoi (n<span class="op">-</span><span class="dv">1</span>) a c b <span class="op">++</span> [(a, b)] <span class="op">++</span> hanoi (n<span class="op">-</span><span class="dv">1</span>) c b a</span></code></pre></div>
+
+            </div>
+            <div id="footer">
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="../images/by-sa.png" /></a><br />
+                Site proudly generated by
+                <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+            </div>
+        </div>
+    </body>
+</html>
