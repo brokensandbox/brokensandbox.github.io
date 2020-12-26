@@ -4,7 +4,10 @@ tags: Haskell, StudyNotes
 ---
 
 * Readings
++ [[https://www.cis.upenn.edu/~cis194/spring13/lectures/01-intro.html][Haskell Basics CIS 194 Week 1]]
 + [[http://learnyouahaskell.com/starting-out][Learn You a Haskell for Great Good, chapter 2]]
++ [[http://book.realworldhaskell.org/read/getting-started.html][Real World Haskell, chapter 1 Getting Started]]
++ [[http://book.realworldhaskell.org/read/types-and-functions.html][Real World Haskell, chapter 2 Types and Functions]]
 
 * Key Learnings about Haskell
 + Every expression and function must return something.For example, any if statement has to have an else statement as well.
@@ -17,8 +20,56 @@ tags: Haskell, StudyNotes
 + Range: ~[1..n]~, ~['a'..'z']~
 + Haskell is lazy, use ~take n [1, 2..]~ to build a list from an infinite list
 + Tuples are set of values with the set length and types. For example, ("John", "Smith", 35), ("Jane", "Doe", 27) are tuples of the same type.
-+ Common tuple functions: ~fst~, ~snd~, ~zip~,
++ Common tuple functions: ~fst~, ~snd~, ~zip~.
++ Check ~+~ operator's order of precedence, use ~:info (+)~
++ Once a variable is bound to an expression, it cannot be changed.
++ *Lazy evaluation*: only create a "promise" to compute the value of the expresssion when it is needed.
 
 * Gotchas
-+ Functions can't begin with upper letters.
++ Functions can't begin with upper letters. Type names start with an Upper letter.
 + Don't use floating point numbers in ranges, they can yield funky results.
++ Not equal is ~/=~, logical negation is ~not~.
++ Haskell compiler is more optimized for ~Double~, ~Float~ is much slower.
+
+* Assignment
+** implement the validation algorithm for credit cards. It follows these steps:
++ Double the value of every second digit beginning from the right. That is, the last digit is unchanged; the second-to-last digit is doubled; the third-to-last digit is unchanged; and so on. For example, [1,3,8,6] becomes [2,3,16,6].
++ Add the digits of the doubled values and the undoubled digits from the original number. For example, [2,3,16,6] becomes 2+3+1+6+6 = 18.
++ Calculate the remainder when the sum is divided by 10. For the above example, the remainder would be 8.
++ If the result equals 0, then the number is valid.
+#+begin_src haskell
+toDigitsRev :: Integer -> [Integer]
+toDigitsRev n
+  | n <= 0 = []
+  | n < 10 = [n]
+  | otherwise = n `mod` 10 : toDigitsRev (n `div` 10)
+
+toDigits :: Integer -> [Integer]
+toDigits n = reverse (toDigitsRev n)
+
+doubleEveryOtherBase :: [Integer] -> [Integer]
+doubleEveryOtherBase [] = []
+doubleEveryOtherBase (x:[]) = [x]
+doubleEveryOtherBase (x:(y:zs)) = x : (y*2) : doubleEveryOtherBase zs
+
+doubleEveryOther :: [Integer] -> [Integer]
+doubleEveryOther n = reverse (doubleEveryOtherBase (reverse n))
+
+sumDigits :: [Integer] -> Integer
+sumDigits [] = 0
+sumDigits (x:[]) = sum (toDigits x)
+sumDigits (x:ys) = sum (toDigits x) + sumDigits ys
+
+validate :: Integer -> Bool
+validate n = sumDigits(doubleEveryOther (toDigits n)) `mod` 10 == 0
+#+end_src
+
+** Solve The Tower of Hanoi puzzle. Given the number of discs and names for the three pegs, hanoi should return a list of moves to be performed to move the stack of discs from the first peg to the second.
+#+begin_src haskell
+type Peg = String
+type Move = (Peg, Peg)
+
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi 1 a b c = [(a, b)]
+hanoi n a b c = hanoi (n-1) a c b ++ [(a, b)] ++ hanoi (n-1) c b a
+#+end_src
