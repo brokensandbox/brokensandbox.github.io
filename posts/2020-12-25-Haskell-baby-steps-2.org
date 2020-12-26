@@ -1,0 +1,12 @@
+---
+title: Haskell Baby Steps - 2
+tags: Haskell, StudyNotes
+---
+* Readings
+
+
+* Key Learnings about Haskell
+
+* Gotchas
+
+* Assignment
