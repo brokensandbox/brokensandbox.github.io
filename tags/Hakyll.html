@@ -42,4 +42,12 @@
             </div>
         </div>
     </body>
+    <script>
+        var currentTime = new Date().getHours();
+        if (7 <= currentTime && currentTime < 19 && document.documentElement) {
+            document.documentElement.className = "light";
+        } else {
+            document.documentElement.className = "dark";
+        }
+</script>
 </html>

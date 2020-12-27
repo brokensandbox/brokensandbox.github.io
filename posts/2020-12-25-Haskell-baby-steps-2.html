@@ -37,8 +37,44 @@
 </div>
 
 <h1 id="readings">Readings</h1>
+<ul>
+<li><a href="https://www.cis.upenn.edu/~cis194/spring13/lectures/02-ADTs.html">Haskell Basics CIS 194 Week 2</a></li>
+<li><a href="http://book.realworldhaskell.org/read/defining-types-streamlining-functions.html">RWH, chapter 3 Defining Types, Streamlining Functions</a></li>
+</ul>
 <h1 id="key-learnings-about-haskell">Key Learnings about Haskell</h1>
+<ul>
+<li><p>New data type can be constructed with <code>data</code> keyword.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">CarInfo</span> <span class="ot">=</span> <span class="dt">Car</span> <span class="dt">String</span> <span class="dt">String</span> <span class="dt">Int</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>               <span class="kw">deriving</span> (<span class="fu">show</span>)</span></code></pre></div>
+<p><code>CarInfo</code> is a type constructor, <code>Car</code> is a value constructor.</p></li>
+<li><p>The names of types and values are independent. Type constructor is only used for type declaration or type signature. Value constructor is used in the actual code.</p></li>
+<li><p><code>type</code> keyword introduces a type synonym.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">type</span> <span class="dt">Model</span> <span class="ot">=</span> <span class="dt">String</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">type</span> <span class="dt">Color</span> <span class="ot">=</span> <span class="dt">String</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="kw">type</span> <span class="dt">Mileage</span> <span class="ot">=</span> <span class="dt">Int</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">CarInfo</span> <span class="ot">=</span> <span class="dt">Car</span> <span class="dt">Model</span> <span class="dt">Color</span> <span class="dt">Mileage</span></span></code></pre></div></li>
+<li><p><strong>Algebraic data type</strong>: can have more than one value constructors, each constructor is separated by <code>|</code>.</p></li>
+<li><p><strong>Pattern matching</strong> acts as the inverse of construction, sometimes referred as <strong>deconstruction</strong>.</p></li>
+<li><p>Use wiledcard pattern <code>_</code> to indicate parts of the pattern that don’t matter. It silence compiler’s warning on unused variables.</p></li>
+<li><p>Can define a data type and accessors for each of its component at the same time.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">data</span> <span class="dt">CarInfo</span> <span class="ot">=</span> <span class="dt">Car</span> {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="ot">      carModel ::</span> <span class="dt">Model</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>    ,<span class="ot"> carColor ::</span> <span class="dt">Color</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    ,<span class="ot"> carMsileage ::</span> <span class="dt">Mileage</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>    } <span class="kw">deriving</span> (<span class="dt">Show</span>)</span></code></pre></div></li>
+<li><p>Haskell standard error report function has signature <code>error :: String -&gt; a</code>. <code>a</code> is there so that the function can be called anywhere, however function aborts and prints out the input string before <code>a</code> is evaluated.</p></li>
+<li><p>Local variables can be declared in a <strong>let</strong>…*in* block, and each variable name is ounded to the expression in the block. The name of the variable can be used within the block and in the expression that follows the <strong>in</strong> keyword.</p></li>
+<li><p>Local variables can also be declared in the <strong>where</strong> clause.</p></li>
+<li><p><code>case ... of</code> is another way to do pattern matching.</p></li>
+</ul>
 <h1 id="gotchas">Gotchas</h1>
+<ul>
+<li><code>==</code> requires its arguments to have the same type.</li>
+<li>Haskell pattern matching respect the order of patterns, and stops at the first success.</li>
+<li><code>-fwarn-incomplete-patterns</code> can be used to warn about incomplete patterns at GHC’s compilation time.</li>
+<li><code>-fwarn-name-shadowing</code> can be used to warn about variable name shadowing.</li>
+</ul>
 <h1 id="assignment">Assignment</h1>
 
             </div>
@@ -49,4 +85,12 @@
             </div>
         </div>
     </body>
+    <script>
+        var currentTime = new Date().getHours();
+        if (7 <= currentTime && currentTime < 19 && document.documentElement) {
+            document.documentElement.className = "light";
+        } else {
+            document.documentElement.className = "dark";
+        }
+</script>
 </html>
