@@ -3,10 +3,44 @@ title: Haskell Baby Steps - 2
 tags: Haskell, StudyNotes
 ---
 * Readings
-
++ [[https://www.cis.upenn.edu/~cis194/spring13/lectures/02-ADTs.html][Haskell Basics CIS 194 Week 2]]
++ [[http://book.realworldhaskell.org/read/defining-types-streamlining-functions.html][RWH, chapter 3 Defining Types, Streamlining Functions]]
 
 * Key Learnings about Haskell
++ New data type can be constructed with ~data~ keyword.
+  #+begin_src haskell
+data CarInfo = Car String String Int
+               deriving (show)
+  #+end_src
+  ~CarInfo~ is a type constructor, ~Car~ is a value constructor.
++ The names of types and values are independent. Type constructor is only used for type declaration or type signature. Value constructor is used in the actual code.
++ ~type~ keyword introduces a type synonym.
+  #+begin_src haskell
+type Model = String
+type Color = String
+type Mileage = Int
 
+data CarInfo = Car Model Color Mileage
+  #+end_src
++ *Algebraic data type*: can have more than one value constructors, each constructor is separated by ~|~.
++ *Pattern matching* acts as the inverse of construction, sometimes referred as *deconstruction*.
++ Use wiledcard pattern ~_~ to indicate parts of the pattern that don't matter. It silence compiler's warning on unused variables.
++ Can define a data type and accessors for each of its component at the same time.
+  #+begin_src haskell
+data CarInfo = Car {
+      carModel :: Model
+    , carColor :: Color
+    , carMsileage :: Mileage
+    } deriving (Show)
+  #+end_src
++ Haskell standard error report function has signature ~error :: String -> a~. ~a~ is there so that the function can be called anywhere, however function aborts and prints out the input string before ~a~ is evaluated.
++ Local variables can be declared in a *let*...*in* block, and each variable name is ounded to the expression in the block. The name of the variable can be used within the block and in the expression that follows the *in* keyword.
++ Local variables can also be declared in the *where* clause.
++ ~case ... of~ is another way to do pattern matching.
 * Gotchas
++ ~==~ requires its arguments to have the same type.
++ Haskell pattern matching respect the order of patterns, and stops at the first success.
++ ~-fwarn-incomplete-patterns~ can be used to warn about incomplete patterns at GHC's compilation time.
++ ~-fwarn-name-shadowing~ can be used to warn about variable name shadowing.
 
 * Assignment
