@@ -43,4 +43,133 @@ data CarInfo = Car {
 + ~-fwarn-incomplete-patterns~ can be used to warn about incomplete patterns at GHC's compilation time.
 + ~-fwarn-name-shadowing~ can be used to warn about variable name shadowing.
 
-* Assignment
+* [[https://www.cis.upenn.edu/~cis194/spring13/hw/02-ADTs.pdf][Assignment]]
+Create a log processor that can parse strings into structured data format and sort logs by timestamp using a recursive tree.
+
+** Exercise 1
+Parse log from a string to a list of *LogMessage*.
+#+begin_src haskell
+{-# OPTIONS_GHC -Wall #-}
+module LogAnalysis where
+
+import Log
+
+isError :: Maybe MessageType -> Bool
+isError t = case t of
+  Just ty -> case ty of
+    (Error _) -> True
+    _         -> False
+  _      -> False
+
+
+parseType :: [String] -> Maybe MessageType
+parseType (t:c:[]) =
+  case t of
+    "I" -> Just Info
+    "W" -> Just Warning
+    "E" -> Just (Error (read c::Int))
+    _   -> Nothing
+parseType _        = Nothing
+
+parseTimeStamp :: Maybe MessageType -> [String] -> Maybe Int
+parseTimeStamp t ms
+  | t == Just Info || t == Just Warning = Just (read (ms !! 1):: Int)
+  | isError t                           = Just (read (ms !! 2) :: Int)
+  | otherwise                           = Nothing
+
+parseString :: Maybe MessageType -> [String] -> String
+parseString t ms
+  | t == Just Info || t == Just Warning =  unwords (tail (tail ms))
+  | isError t                           =  unwords (tail (tail (tail ms)))
+  | otherwise                           =  ""
+
+parseMessage :: String -> LogMessage
+parseMessage m = case t of
+  Just t' -> case ts of
+    Just ts' -> LogMessage t' ts' s
+    _       -> Unknown m
+  _         -> Unknown m
+  where ms = words m
+        t  = parseType (take 2 ms)
+        ts = parseTimeStamp t ms
+        s  = parseString t ms
+
+parse :: String -> [LogMessage]
+parse s = map parseMessage (lines s)
+#+end_src
+
+** Exercise 2
+Create an insert function to add a *LogMessage* into a given *MessageTree*.
+#+begin_src haskell
+getTimeStamp :: MessageTree -> TimeStamp
+getTimeStamp mt = case mt of
+  (Node _ (LogMessage _ ts _) _) -> ts
+  _                              -> 0
+
+insertRight :: LogMessage -> MessageTree -> MessageTree
+insertRight lm mt = case mt of
+  (Node ln clm Leaf) -> (Node ln clm (Node Leaf lm Leaf))
+  (Node ln clm rn)   -> (Node ln clm (insert lm rn))
+  _                  -> error "insertRight execution shouldn't reach here"
+
+insertLeft :: LogMessage -> MessageTree -> MessageTree
+insertLeft lm mt = case mt of
+  (Node Leaf clm rn) -> (Node (Node Leaf lm Leaf) clm rn)
+  (Node ln clm rn)   -> (Node (insert lm ln) clm rn)
+  _                  -> error "insertLeft execution shouldn't reach here"
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert lm mt = case lm of
+  (Unknown _)         -> mt
+  (LogMessage _ ts _) -> case mt of
+    Leaf -> Node Leaf lm Leaf
+    _    -> if ts > cts then insertRight lm mt
+            else insertLeft lm mt
+            where cts = getTimeStamp mt
+#+end_src
+
+** Exercise 3
+Build a *MessageTree* out of a list of *LogMessage*.
+#+begin_src haskell
+build :: [LogMessage] -> MessageTree
+build []    = Leaf
+build [x]   = insert x (build [])
+build (x:xs) = insert x (build xs)
+#+end_src
+
+** Exercise 4
+Convert a sorted *MessageTree* to a list of *LogMessage* ordered by timestamp.
+#+begin_src haskell
+inOrder :: MessageTree -> [LogMessage]
+inOrder mt = case mt of
+  Leaf                 -> []
+  (Node Leaf clm Leaf) -> [clm]
+  (Node Leaf clm rn)   -> clm : inOrder rn
+  (Node ln clm rn)     -> (inOrder ln) ++ [clm] ++ (inOrder rn)
+#+end_src
+
+** Exercise 5
+Filter a list of *LogMessage* to ones with error severity >= 50 and only return the string field of the *LogMessage* in a list.
+#+begin_src haskell
+isCritical :: LogMessage -> Bool
+isCritical lm = case lm of
+  (LogMessage (Error code) _ _) -> if code >= 50 then True
+                                   else False
+  _                             -> False
+
+filterToCriticalErrors :: [LogMessage] -> [LogMessage]
+filterToCriticalErrors [] = []
+filterToCriticalErrors (x:xs) = if (isCritical x) then x:(filterToCriticalErrors xs)
+                                else filterToCriticalErrors xs
+
+mapToMessages :: [LogMessage] -> [String]
+mapToMessages [] = []
+mapToMessages (x:xs) = case x of
+  (LogMessage _ _ s) -> s:(mapToMessages xs)
+  _                  -> (mapToMessages xs)
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong lms = mapToMessages (inOrder (build (filterToCriticalErrors lms)))
+#+end_src
+
+I think it is relatively easy to write the code that meets each of the assignment objectives (without any unit tests...). However it is much harder to know if there are better solutions to each of the implementations and catch all the edge cases associated with malformed logs.
