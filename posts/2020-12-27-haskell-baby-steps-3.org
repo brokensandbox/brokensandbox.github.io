@@ -32,3 +32,7 @@ skips [1] == [[1]]
 skips [True,False] == [[True,False], [False]]
 skips [] == []
 #+end_example
+
+** Exercise 2 Local maxima
+
+** Exercise 3 Histogram
