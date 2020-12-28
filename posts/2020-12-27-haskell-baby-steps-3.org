@@ -1,0 +1,34 @@
+---
+title: Haskell Baby Steps - 3
+tags: Haskell, StudyNotes
+---
+
+* Readings
++ [[https://www.cis.upenn.edu/~cis194/spring13/lectures/03-rec-poly.html][Haskell Basic CIS 194 Week 3]]
+
+* Key Learnings
++ Both data types and functions can be *polymorphic*.
++ *Partial Functions*: Functions which have certain inputs that will make them crash or recurse infinitely.
++ *Total Functions*: Functions are well-defined on all possible inputs.
++ Avoid using *Partial Functions* as much as possible since it is difficult to always be sure about input ranges to functions. Instead of writing partial functions, either replace them with total functions or wrap them with *Maybe*.
+
+* References
++ [[https://hackage.haskell.org/package/base-4.14.1.0/docs/Prelude.html][Basic Prelude Module Documentation]]
++ [[https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-List.html][Data.List Module Documentation]]
++ [[https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-Maybe.html][Data.Maybe Module Documentation]]
+
+* [[https://www.cis.upenn.edu/~cis194/spring13/hw/03-rec-poly.pdf][Assignment]]
+** Exercise 1 Hopscotch
+Write a function ~skips :: [a] -> [[a]]~
+The output of skips is a list of lists. The first list in the output should
+be the same as the input list. The second list in the output should
+contain every second element from the input list. . . and the nth list in
+the output should contain every nth element from the input list.
+For example:
+#+begin_example
+skips "ABCD" == ["ABCD", "BD", "C", "D"]
+skips "hello!" == ["hello!", "el!", "l!", "l", "o", "!"]
+skips [1] == [[1]]
+skips [True,False] == [[True,False], [False]]
+skips [] == []
+#+end_example

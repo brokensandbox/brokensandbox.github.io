@@ -141,7 +141,7 @@ code {
     color: var(--codeTextColor);
 }
 
-.sourceCode:not(pre):not(code) {
+.sourceCode:not(pre):not(code), pre.example {
     background-color: var(--codeBgColor);
     -webkit-overflow-scrolling: touch;
     overflow: auto;

@@ -28,6 +28,10 @@ pre.sourceCode {
     margin: 0
 }
 
+pre.example code {
+    padding: 0;
+}
+
 @media screen {
     div.sourceCode {
         overflow: auto
