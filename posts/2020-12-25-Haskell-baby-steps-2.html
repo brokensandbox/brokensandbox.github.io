@@ -75,7 +75,120 @@
 <li><code>-fwarn-incomplete-patterns</code> can be used to warn about incomplete patterns at GHC’s compilation time.</li>
 <li><code>-fwarn-name-shadowing</code> can be used to warn about variable name shadowing.</li>
 </ul>
-<h1 id="assignment">Assignment</h1>
+<h1 id="assignment"><a href="https://www.cis.upenn.edu/~cis194/spring13/hw/02-ADTs.pdf">Assignment</a></h1>
+<p>Create a log processor that can parse strings into structured data format and sort logs by timestamp using a recursive tree.</p>
+<h2 id="exercise-1">Exercise 1</h2>
+<p>Parse log from a string to a list of <strong>LogMessage</strong>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ot">{-# OPTIONS_GHC -Wall #-}</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">module</span> <span class="dt">LogAnalysis</span> <span class="kw">where</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="kw">import</span> <span class="dt">Log</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="ot">isError ::</span> <span class="dt">Maybe</span> <span class="dt">MessageType</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>isError t <span class="ot">=</span> <span class="kw">case</span> t <span class="kw">of</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>  <span class="dt">Just</span> ty <span class="ot">-&gt;</span> <span class="kw">case</span> ty <span class="kw">of</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>    (<span class="dt">Error</span> _) <span class="ot">-&gt;</span> <span class="dt">True</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>    _         <span class="ot">-&gt;</span> <span class="dt">False</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>  _      <span class="ot">-&gt;</span> <span class="dt">False</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="ot">parseType ::</span> [<span class="dt">String</span>] <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">MessageType</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>parseType (t<span class="op">:</span>c<span class="op">:</span>[]) <span class="ot">=</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>  <span class="kw">case</span> t <span class="kw">of</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>    <span class="st">&quot;I&quot;</span> <span class="ot">-&gt;</span> <span class="dt">Just</span> <span class="dt">Info</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>    <span class="st">&quot;W&quot;</span> <span class="ot">-&gt;</span> <span class="dt">Just</span> <span class="dt">Warning</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>    <span class="st">&quot;E&quot;</span> <span class="ot">-&gt;</span> <span class="dt">Just</span> (<span class="dt">Error</span> (<span class="fu">read</span><span class="ot"> c::</span><span class="dt">Int</span>))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>    _   <span class="ot">-&gt;</span> <span class="dt">Nothing</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>parseType _        <span class="ot">=</span> <span class="dt">Nothing</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a><span class="ot">parseTimeStamp ::</span> <span class="dt">Maybe</span> <span class="dt">MessageType</span> <span class="ot">-&gt;</span> [<span class="dt">String</span>] <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a>parseTimeStamp t ms</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>  <span class="op">|</span> t <span class="op">==</span> <span class="dt">Just</span> <span class="dt">Info</span> <span class="op">||</span> t <span class="op">==</span> <span class="dt">Just</span> <span class="dt">Warning</span> <span class="ot">=</span> <span class="dt">Just</span> (<span class="fu">read</span> (ms <span class="op">!!</span> <span class="dv">1</span>)<span class="ot">::</span> <span class="dt">Int</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>  <span class="op">|</span> isError t                           <span class="ot">=</span> <span class="dt">Just</span> (<span class="fu">read</span> (ms <span class="op">!!</span> <span class="dv">2</span>)<span class="ot"> ::</span> <span class="dt">Int</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>  <span class="op">|</span> <span class="fu">otherwise</span>                           <span class="ot">=</span> <span class="dt">Nothing</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="ot">parseString ::</span> <span class="dt">Maybe</span> <span class="dt">MessageType</span> <span class="ot">-&gt;</span> [<span class="dt">String</span>] <span class="ot">-&gt;</span> <span class="dt">String</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a>parseString t ms</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a>  <span class="op">|</span> t <span class="op">==</span> <span class="dt">Just</span> <span class="dt">Info</span> <span class="op">||</span> t <span class="op">==</span> <span class="dt">Just</span> <span class="dt">Warning</span> <span class="ot">=</span>  <span class="fu">unwords</span> (<span class="fu">tail</span> (<span class="fu">tail</span> ms))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a>  <span class="op">|</span> isError t                           <span class="ot">=</span>  <span class="fu">unwords</span> (<span class="fu">tail</span> (<span class="fu">tail</span> (<span class="fu">tail</span> ms)))</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a>  <span class="op">|</span> <span class="fu">otherwise</span>                           <span class="ot">=</span>  <span class="st">&quot;&quot;</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a><span class="ot">parseMessage ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">LogMessage</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true"></a>parseMessage m <span class="ot">=</span> <span class="kw">case</span> t <span class="kw">of</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true"></a>  <span class="dt">Just</span> t' <span class="ot">-&gt;</span> <span class="kw">case</span> ts <span class="kw">of</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true"></a>    <span class="dt">Just</span> ts' <span class="ot">-&gt;</span> <span class="dt">LogMessage</span> t' ts' s</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true"></a>    _       <span class="ot">-&gt;</span> <span class="dt">Unknown</span> m</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true"></a>  _         <span class="ot">-&gt;</span> <span class="dt">Unknown</span> m</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true"></a>  <span class="kw">where</span> ms <span class="ot">=</span> <span class="fu">words</span> m</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true"></a>        t  <span class="ot">=</span> parseType (<span class="fu">take</span> <span class="dv">2</span> ms)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true"></a>        ts <span class="ot">=</span> parseTimeStamp t ms</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true"></a>        s  <span class="ot">=</span> parseString t ms</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true"></a><span class="ot">parse ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> [<span class="dt">LogMessage</span>]</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true"></a>parse s <span class="ot">=</span> <span class="fu">map</span> parseMessage (<span class="fu">lines</span> s)</span></code></pre></div>
+<h2 id="exercise-2">Exercise 2</h2>
+<p>Create an insert function to add a <strong>LogMessage</strong> into a given <strong>MessageTree</strong>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="ot">getTimeStamp ::</span> <span class="dt">MessageTree</span> <span class="ot">-&gt;</span> <span class="dt">TimeStamp</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>getTimeStamp mt <span class="ot">=</span> <span class="kw">case</span> mt <span class="kw">of</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  (<span class="dt">Node</span> _ (<span class="dt">LogMessage</span> _ ts _) _) <span class="ot">-&gt;</span> ts</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>  _                              <span class="ot">-&gt;</span> <span class="dv">0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="ot">insertRight ::</span> <span class="dt">LogMessage</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>insertRight lm mt <span class="ot">=</span> <span class="kw">case</span> mt <span class="kw">of</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>  (<span class="dt">Node</span> ln clm <span class="dt">Leaf</span>) <span class="ot">-&gt;</span> (<span class="dt">Node</span> ln clm (<span class="dt">Node</span> <span class="dt">Leaf</span> lm <span class="dt">Leaf</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>  (<span class="dt">Node</span> ln clm rn)   <span class="ot">-&gt;</span> (<span class="dt">Node</span> ln clm (insert lm rn))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>  _                  <span class="ot">-&gt;</span> <span class="fu">error</span> <span class="st">&quot;insertRight execution shouldn't reach here&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a><span class="ot">insertLeft ::</span> <span class="dt">LogMessage</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>insertLeft lm mt <span class="ot">=</span> <span class="kw">case</span> mt <span class="kw">of</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>  (<span class="dt">Node</span> <span class="dt">Leaf</span> clm rn) <span class="ot">-&gt;</span> (<span class="dt">Node</span> (<span class="dt">Node</span> <span class="dt">Leaf</span> lm <span class="dt">Leaf</span>) clm rn)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a>  (<span class="dt">Node</span> ln clm rn)   <span class="ot">-&gt;</span> (<span class="dt">Node</span> (insert lm ln) clm rn)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a>  _                  <span class="ot">-&gt;</span> <span class="fu">error</span> <span class="st">&quot;insertLeft execution shouldn't reach here&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a><span class="ot">insert ::</span> <span class="dt">LogMessage</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span> <span class="ot">-&gt;</span> <span class="dt">MessageTree</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a>insert lm mt <span class="ot">=</span> <span class="kw">case</span> lm <span class="kw">of</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a>  (<span class="dt">Unknown</span> _)         <span class="ot">-&gt;</span> mt</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a>  (<span class="dt">LogMessage</span> _ ts _) <span class="ot">-&gt;</span> <span class="kw">case</span> mt <span class="kw">of</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true"></a>    <span class="dt">Leaf</span> <span class="ot">-&gt;</span> <span class="dt">Node</span> <span class="dt">Leaf</span> lm <span class="dt">Leaf</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true"></a>    _    <span class="ot">-&gt;</span> <span class="kw">if</span> ts <span class="op">&gt;</span> cts <span class="kw">then</span> insertRight lm mt</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true"></a>            <span class="kw">else</span> insertLeft lm mt</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true"></a>            <span class="kw">where</span> cts <span class="ot">=</span> getTimeStamp mt</span></code></pre></div>
+<h2 id="exercise-3">Exercise 3</h2>
+<p>Build a <strong>MessageTree</strong> out of a list of <strong>LogMessage</strong>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="ot">build ::</span> [<span class="dt">LogMessage</span>] <span class="ot">-&gt;</span> <span class="dt">MessageTree</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>build []    <span class="ot">=</span> <span class="dt">Leaf</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>build [x]   <span class="ot">=</span> insert x (build [])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>build (x<span class="op">:</span>xs) <span class="ot">=</span> insert x (build xs)</span></code></pre></div>
+<h2 id="exercise-4">Exercise 4</h2>
+<p>Convert a sorted <strong>MessageTree</strong> to a list of <strong>LogMessage</strong> ordered by timestamp.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="ot">inOrder ::</span> <span class="dt">MessageTree</span> <span class="ot">-&gt;</span> [<span class="dt">LogMessage</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>inOrder mt <span class="ot">=</span> <span class="kw">case</span> mt <span class="kw">of</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  <span class="dt">Leaf</span>                 <span class="ot">-&gt;</span> []</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>  (<span class="dt">Node</span> <span class="dt">Leaf</span> clm <span class="dt">Leaf</span>) <span class="ot">-&gt;</span> [clm]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>  (<span class="dt">Node</span> <span class="dt">Leaf</span> clm rn)   <span class="ot">-&gt;</span> clm <span class="op">:</span> inOrder rn</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>  (<span class="dt">Node</span> ln clm rn)     <span class="ot">-&gt;</span> (inOrder ln) <span class="op">++</span> [clm] <span class="op">++</span> (inOrder rn)</span></code></pre></div>
+<h2 id="exercise-5">Exercise 5</h2>
+<p>Filter a list of <strong>LogMessage</strong> to ones with error severity &gt;= 50 and only return the string field of the <strong>LogMessage</strong> in a list.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ot">isCritical ::</span> <span class="dt">LogMessage</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>isCritical lm <span class="ot">=</span> <span class="kw">case</span> lm <span class="kw">of</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>  (<span class="dt">LogMessage</span> (<span class="dt">Error</span> code) _ _) <span class="ot">-&gt;</span> <span class="kw">if</span> code <span class="op">&gt;=</span> <span class="dv">50</span> <span class="kw">then</span> <span class="dt">True</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>                                   <span class="kw">else</span> <span class="dt">False</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>  _                             <span class="ot">-&gt;</span> <span class="dt">False</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a><span class="ot">filterToCriticalErrors ::</span> [<span class="dt">LogMessage</span>] <span class="ot">-&gt;</span> [<span class="dt">LogMessage</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a>filterToCriticalErrors [] <span class="ot">=</span> []</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>filterToCriticalErrors (x<span class="op">:</span>xs) <span class="ot">=</span> <span class="kw">if</span> (isCritical x) <span class="kw">then</span> x<span class="op">:</span>(filterToCriticalErrors xs)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a>                                <span class="kw">else</span> filterToCriticalErrors xs</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a><span class="ot">mapToMessages ::</span> [<span class="dt">LogMessage</span>] <span class="ot">-&gt;</span> [<span class="dt">String</span>]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a>mapToMessages [] <span class="ot">=</span> []</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a>mapToMessages (x<span class="op">:</span>xs) <span class="ot">=</span> <span class="kw">case</span> x <span class="kw">of</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a>  (<span class="dt">LogMessage</span> _ _ s) <span class="ot">-&gt;</span> s<span class="op">:</span>(mapToMessages xs)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a>  _                  <span class="ot">-&gt;</span> (mapToMessages xs)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a><span class="ot">whatWentWrong ::</span> [<span class="dt">LogMessage</span>] <span class="ot">-&gt;</span> [<span class="dt">String</span>]</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true"></a>whatWentWrong lms <span class="ot">=</span> mapToMessages (inOrder (build (filterToCriticalErrors lms)))</span></code></pre></div>
+<p>I think it is relatively easy to write the code that meets each of the assignment objectives (without any unit tests…). However it is much harder to know if there are better solutions to each of the implementations and catch all the edge cases associated with malformed logs.</p>
 
             </div>
             <div id="footer">
