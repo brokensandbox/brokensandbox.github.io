@@ -62,8 +62,80 @@ skips [1] == [[1]]
 skips [True,False] == [[True,False], [False]]
 skips [] == []
 </code></pre>
+<h3 id="solution">Solution</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ot">skip ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>skip <span class="dv">1</span> xs <span class="ot">=</span> xs</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>skip _ [] <span class="ot">=</span> []</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>skip n xs <span class="ot">=</span> <span class="kw">case</span> x <span class="kw">of</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>  <span class="co">-- recursively call skip with truncated list until its shorter than the skips</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>  <span class="dt">Just</span> x' <span class="ot">-&gt;</span> x'<span class="op">:</span>(<span class="kw">if</span> l <span class="op">&gt;=</span> n <span class="kw">then</span> (skip n a) <span class="kw">else</span> [])</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>  <span class="dt">Nothing</span> <span class="ot">-&gt;</span> []</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>  <span class="co">-- use safe tail to get the element at the skip</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>  <span class="kw">where</span> x <span class="ot">=</span> lastMay (<span class="fu">take</span> n xs)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>        a <span class="ot">=</span> <span class="fu">drop</span> n xs</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>        l <span class="ot">=</span> <span class="fu">length</span> a</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a><span class="ot">skips ::</span> [a] <span class="ot">-&gt;</span> [[a]]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a><span class="co">-- call skip with 1 to length n skips</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a>skips xs <span class="ot">=</span> <span class="fu">take</span> (<span class="fu">length</span> xs) <span class="op">$</span> [skip x xs <span class="op">|</span> x <span class="ot">&lt;-</span> [<span class="dv">1</span><span class="op">..</span>]]</span></code></pre></div>
 <h2 id="exercise-2-local-maxima">Exercise 2 Local maxima</h2>
+<p>A local maximum of a list is an element of the list which is strictly greater than both the elements immediately before and after it. For example, in the list [2,3,4,1,5], the only local maximum is 4, since it is greater than the elements immediately before and after it (3 and 1). 5 is not a local maximum since there is no element that comes after it.</p>
+<p>Write a function: <code>localMaxima :: [Integer] -&gt; [Integer]</code> which finds all the local maxima in the input list and returns them in order. For example:</p>
+<pre class="example"><code>localMaxima [2,9,5,6,1] == [9,6]
+localMaxima [2,3,4,1,5] == [4]
+localMaxima [1,2,3,4,5] == []
+</code></pre>
+<h3 id="solution-1">Solution</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ot">localMaxima ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> [<span class="dt">Integer</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>localMaxima [] <span class="ot">=</span> []</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>localMaxima (_<span class="op">:</span>[]) <span class="ot">=</span> []</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>localMaxima (_<span class="op">:</span>_<span class="op">:</span>[]) <span class="ot">=</span> []</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>localMaxima (a<span class="op">:</span>b<span class="op">:</span>c<span class="op">:</span>xs) <span class="ot">=</span> <span class="kw">if</span> b <span class="op">&gt;</span> a <span class="op">&amp;&amp;</span> b <span class="op">&gt;</span> c <span class="kw">then</span> b<span class="op">:</span>(localMaxima (b<span class="op">:</span>c<span class="op">:</span>xs))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>                         <span class="kw">else</span> localMaxima (b<span class="op">:</span>c<span class="op">:</span>xs)</span></code></pre></div>
 <h2 id="exercise-3-histogram">Exercise 3 Histogram</h2>
+<p>For this task, write a function <code>histogram :: [Integer] -&gt; String</code> which takes as input a list of Integers between 0 and 9 (inclusive), and outputs a vertical histogram showing how many of each number were in the input list. You may assume that the input list does not contain any numbers less than zero or greater than 9 (that is, it does not matter what your function does if the input does contain such numbers). Your output must exactly match the output shown in the examples below.</p>
+<pre class="example"><code>histogram [1,1,1,5] ==
+  *
+  *
+  * *
+ ==========
+ 0123456789
+histogram [1,4,5,4,6,6,3,4,2,4,9] ==
+     *
+     *
+     * *
+  ******  *
+ ==========
+ 0123456789
+</code></pre>
+<p><strong>Important note:</strong> If you type something like histogram [3,5] at the ghci prompt, you should see something like this: " * * ==========" This is a textual representation of the String output, including  escape sequences to indicate newline characters. To actually visualize the histogram as in the examples above, use putStr, for example, putStr (histogram [3,5]).</p>
+<h3 id="solution-2">Solution</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">import</span> <span class="dt">Data.List</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="fu">toInt</span><span class="ot"> ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> [<span class="dt">Int</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="fu">toInt</span> xs <span class="ot">=</span> <span class="fu">map</span> <span class="fu">fromIntegral</span> xs</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="ot">addBase ::</span> <span class="dt">String</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>addBase <span class="ot">=</span> <span class="st">&quot;==========\n0123456789\n&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="ot">replace ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>replace pos newVal list <span class="ot">=</span> <span class="fu">take</span> pos list <span class="op">++</span> newVal <span class="op">:</span> <span class="fu">drop</span> (pos<span class="op">+</span><span class="dv">1</span>) list</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="co">-- Construct a list of 10 0's. Group sorted list of ints. Replace index i of 0 list with size of</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a><span class="co">-- the list of i's from the ints group.</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a><span class="ot">freqCounter ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> [<span class="dt">Int</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>freqCounter xs <span class="ot">=</span> <span class="fu">foldl</span> (\a (x<span class="op">:</span>s) <span class="ot">-&gt;</span> replace x ((<span class="fu">length</span> s) <span class="op">+</span> <span class="dv">1</span>) a) (<span class="fu">take</span> <span class="dv">10</span> (<span class="fu">repeat</span> <span class="dv">0</span>)) (<span class="fu">group</span> (<span class="fu">sort</span> xs))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a><span class="co">-- Construct a string for each column i, the number of * equals to frequence of</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a><span class="co">-- number i, and pad it with spaces until the max height of the histogram. Finally</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="co">-- transpose the entire 2D list.</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="ot">createGraph ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> [<span class="dt">String</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>createGraph xs <span class="ot">=</span> transpose <span class="op">$</span> <span class="fu">foldl</span> (\a x <span class="ot">-&gt;</span> ((<span class="fu">replicate</span> (m <span class="op">-</span> x) <span class="ch">' '</span>) <span class="op">++</span> (<span class="fu">replicate</span> x <span class="ch">'*'</span>))<span class="op">:</span>a) [] xs</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>  <span class="kw">where</span> m <span class="ot">=</span> <span class="fu">maximum</span> xs</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a><span class="ot">histogram ::</span> [<span class="dt">Integer</span>] <span class="ot">-&gt;</span> <span class="dt">String</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a>histogram [] <span class="ot">=</span> addBase</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>histogram xs <span class="ot">=</span> (<span class="fu">foldl</span> (\a s <span class="ot">-&gt;</span> a <span class="op">++</span> (<span class="fu">reverse</span> s) <span class="op">++</span> <span class="st">&quot;\n&quot;</span>) <span class="st">&quot;&quot;</span> (createGraph (freqCounter (<span class="fu">toInt</span> xs)))) <span class="op">++</span> addBase</span></code></pre></div>
 
             </div>
             <div id="footer">
