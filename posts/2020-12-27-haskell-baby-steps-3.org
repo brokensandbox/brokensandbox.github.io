@@ -20,10 +20,7 @@ tags: Haskell, StudyNotes
 * [[https://www.cis.upenn.edu/~cis194/spring13/hw/03-rec-poly.pdf][Assignment]]
 ** Exercise 1 Hopscotch
 Write a function ~skips :: [a] -> [[a]]~
-The output of skips is a list of lists. The first list in the output should
-be the same as the input list. The second list in the output should
-contain every second element from the input list. . . and the nth list in
-the output should contain every nth element from the input list.
+The output of skips is a list of lists. The first list in the output should be the same as the input list. The second list in the output should contain every second element from the input list. . . and the nth list in the output should contain every nth element from the input list.
 For example:
 #+begin_example
 skips "ABCD" == ["ABCD", "BD", "C", "D"]
@@ -33,6 +30,89 @@ skips [True,False] == [[True,False], [False]]
 skips [] == []
 #+end_example
 
+*** Solution
+#+begin_src haskell
+skip :: Int -> [a] -> [a]
+skip 1 xs = xs
+skip _ [] = []
+skip n xs = case x of
+  -- recursively call skip with truncated list until its shorter than the skips
+  Just x' -> x':(if l >= n then (skip n a) else [])
+  Nothing -> []
+  -- use safe tail to get the element at the skip
+  where x = lastMay (take n xs)
+        a = drop n xs
+        l = length a
+
+skips :: [a] -> [[a]]
+-- call skip with 1 to length n skips
+skips xs = take (length xs) $ [skip x xs | x <- [1..]]
+#+end_src
+
 ** Exercise 2 Local maxima
+A local maximum of a list is an element of the list which is strictly greater than both the elements immediately before and after it. For example, in the list [2,3,4,1,5], the only local maximum is 4, since it is greater than the elements immediately before and after it (3 and 1). 5 is not a local maximum since there is no element that comes after it.
+
+Write a function: ~localMaxima :: [Integer] -> [Integer]~ which finds all the local maxima in the input list and returns them in order. For example:
+#+begin_example
+localMaxima [2,9,5,6,1] == [9,6]
+localMaxima [2,3,4,1,5] == [4]
+localMaxima [1,2,3,4,5] == []
+#+end_example
+*** Solution
+#+begin_src haskell
+localMaxima :: [Integer] -> [Integer]
+localMaxima [] = []
+localMaxima (_:[]) = []
+localMaxima (_:_:[]) = []
+localMaxima (a:b:c:xs) = if b > a && b > c then b:(localMaxima (b:c:xs))
+                         else localMaxima (b:c:xs)
+#+end_src
 
 ** Exercise 3 Histogram
+For this task, write a function ~histogram :: [Integer] -> String~
+which takes as input a list of Integers between 0 and 9 (inclusive), and outputs a vertical histogram showing how many of each number were in the input list. You may assume that the input list does not contain any numbers less than zero or greater than 9 (that is, it does not matter what your function does if the input does contain such numbers). Your output must exactly match the output shown in the examples below.
+#+begin_example
+histogram [1,1,1,5] ==
+  *
+  *
+  * *
+ ==========
+ 0123456789
+histogram [1,4,5,4,6,6,3,4,2,4,9] ==
+     *
+     *
+     * *
+  ******  *
+ ==========
+ 0123456789
+#+end_example
+*Important note:* If you type something like histogram [3,5] at the ghci prompt, you should see something like this: " * * \n==========\n0123456789\n" This is a textual representation of the String output, including \n escape sequences to indicate newline characters. To actually visualize the histogram as in the examples above, use putStr, for example, putStr (histogram [3,5]).
+*** Solution
+#+begin_src haskell
+import Data.List
+
+toInt :: [Integer] -> [Int]
+toInt xs = map fromIntegral xs
+
+addBase :: String
+addBase = "==========\n0123456789\n"
+
+replace :: Int -> a -> [a] -> [a]
+replace pos newVal list = take pos list ++ newVal : drop (pos+1) list
+
+-- Construct a list of 10 0's. Group sorted list of ints. Replace index i of 0 list with size of
+-- the list of i's from the ints group.
+freqCounter :: [Int] -> [Int]
+freqCounter xs = foldl (\a (x:s) -> replace x ((length s) + 1) a) (take 10 (repeat 0)) (group (sort xs))
+
+-- Construct a string for each column i, the number of * equals to frequence of
+-- number i, and pad it with spaces until the max height of the histogram. Finally
+-- transpose the entire 2D list.
+createGraph :: [Int] -> [String]
+createGraph xs = transpose $ foldl (\a x -> ((replicate (m - x) ' ') ++ (replicate x '*')):a) [] xs
+  where m = maximum xs
+
+histogram :: [Integer] -> String
+histogram [] = addBase
+histogram xs = (foldl (\a s -> a ++ (reverse s) ++ "\n") "" (createGraph (freqCounter (toInt xs)))) ++ addBase
+#+end_src

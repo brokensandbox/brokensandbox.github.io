@@ -97,7 +97,7 @@ html.light {
     --color5: #880000;
     --color6: #06287e;
     --color7: #ba2121;
-    --color8: #666666;
+    --color8: #8a5900;
 }
 
 html, html.dark {
@@ -181,7 +181,7 @@ code span.in {
     font-style: italic
 }
 
-code span.op {
+code span.op, code span.st {
     color: var(--color8);
 }
 
@@ -193,7 +193,7 @@ code span.pp {
     color: #bc7a00
 }
 
-code span.sc, code span.st, code span.vs {
+code span.sc, code span.vs {
     color: #4070a0
 }
 

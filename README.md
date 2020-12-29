@@ -16,5 +16,4 @@ Deploy these changes to github page with `stack exec brokensandbox deploy`
 
 ## TODO
 [ ] Add [foward and back links](http://hrothen.github.io/posts/switching-from-jekyll-bootstrap-to-hakyll.html) between posts
-[ ] Dark mode?!
 [ ] Create a "TAG" option to list out all the tags
